@@ -1,0 +1,338 @@
+[
+  {
+    "id": 1,
+    "nome": "Mentor",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 2,
+    "nome": "Cientista",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 3,
+    "nome": "Filósofo",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 4,
+    "nome": "Mestre",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 5,
+    "nome": "Estrategista",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 6,
+    "nome": "Orquestrador",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 7,
+    "nome": "Vidente",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 8,
+    "nome": "Astrônomo",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 9,
+    "nome": "Burguês",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 10,
+    "nome": "Sócio",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 11,
+    "nome": "Engenheiro",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 12,
+    "nome": "Cigana",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 13,
+    "nome": "Guru",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 14,
+    "nome": "Louco",
+    "categoria": "Estratégicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 15,
+    "nome": "Curador",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 16,
+    "nome": "Artista",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 17,
+    "nome": "Narrador",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 18,
+    "nome": "Vazio",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 19,
+    "nome": "Mentorzinho",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 20,
+    "nome": "Custódio",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 21,
+    "nome": "Espião",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 22,
+    "nome": "Bruxo",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 23,
+    "nome": "Arqueólogo",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 24,
+    "nome": "Exorcista",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 25,
+    "nome": "Promotor",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 26,
+    "nome": "Advogado",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 27,
+    "nome": "Juiz",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 28,
+    "nome": "Fantasma",
+    "categoria": "Simbólicas",
+    "descricao_curta": ""
+  },
+  {
+    "id": 29,
+    "nome": "Vigia",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 30,
+    "nome": "Executor",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 31,
+    "nome": "Mordomo",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 32,
+    "nome": "Treinador",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 33,
+    "nome": "Aprovisionador",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 34,
+    "nome": "Instrutor",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 35,
+    "nome": "Médico",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 36,
+    "nome": "Guardião",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 37,
+    "nome": "Bruto",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 38,
+    "nome": "Arauto",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 39,
+    "nome": "Adjunto",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 40,
+    "nome": "Comandante",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 41,
+    "nome": "Inimigo",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 42,
+    "nome": "Coveiro",
+    "categoria": "Operacionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 43,
+    "nome": "Psicólogo",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 44,
+    "nome": "Terapeuta",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 45,
+    "nome": "Confessor",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 46,
+    "nome": "Espelho",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 47,
+    "nome": "Sombra",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 48,
+    "nome": "Dor",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 49,
+    "nome": "Desejo",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 50,
+    "nome": "Vingador",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 51,
+    "nome": "Fúria",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 52,
+    "nome": "Luz",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 53,
+    "nome": "Herdeiro",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 54,
+    "nome": "Princesa",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 55,
+    "nome": "Autor",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  },
+  {
+    "id": 56,
+    "nome": "Bobo_da_Corte",
+    "categoria": "Emocionais",
+    "descricao_curta": ""
+  }
+]

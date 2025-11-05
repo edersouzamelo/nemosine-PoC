@@ -1,0 +1,2 @@
+#!/data/data/com.termux/files/usr/bin/bash
+cd ~/ && python3 menu_nemosine.py

@@ -4,8 +4,7 @@
 **Versão:** 0.1.0  
 **Licença:** [AGPL-3.0](LICENSE)  
 **Repositório:** https://github.com/edersouzamelo/nemosine-PoC  
-**DOI (Zenodo):** _a ser gerado_
-
+**DOI (Zenodo):** (https://doi.org/10.5281/zenodo.17538243)
 ---
 
 ### 📜 Descrição

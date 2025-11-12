@@ -42,5 +42,7 @@ O núcleo interno (*core-private*) permanecerá fechado até que sua patente e d
 - **v2.0.0:** Interface gráfica e integração com IA simbólica externa.
 
 ---
+> PoC ativo no desktop — branch `poc-desktop` (v0.3-min, Mentor respondendo).
+
 
 > “O código é o corpo, mas a mente é o sistema.” – *E.S.M.*

@@ -1,28 +1,49 @@
-# Nemosine PoC – Mentor respondendo (v0.4-min, com cliente LLM simulado/real)
+# Nemosine PoC – Mentor + LLM num arquivo só (versão simples)
+
 from pathlib import Path
 import json
-from llm_client import enviar_para_llm  # importa o cliente
+import os
 
-OUT = Path("data/outputs"); OUT.mkdir(parents=True, exist_ok=True)
+from dotenv import load_dotenv
+from openai import OpenAI
+
+OUT = Path("data/outputs")
+OUT.mkdir(parents=True, exist_ok=True)
 LOG = OUT / "logs.jsonl"
+
+
+def enviar_para_llm(mensagem: str) -> str:
+    """Chama ChatGPT de forma simples. Se der algo errado, devolve texto explicando."""
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    model = os.getenv("OPENAI_MODEL", "gpt-5")
+
+    if not api_key:
+        return "(LLM off) Falta OPENAI_API_KEY no .env na raiz do projeto."
+
+    client = OpenAI(api_key=api_key)
+
+    try:
+        resp = client.responses.create(model=model, input=mensagem)
+        return getattr(resp, "output_text", "(LLM) resposta sem output_text")
+    except Exception as e:
+        return f"(LLM erro) {e.__class__.__name__}: {e}"
+
 
 def mentor_responde(pedido: str) -> str:
     t = pedido.lower()
     if "passo" in t or "hoje" in t or "agora" in t:
-        return "Passo único de hoje: atualizar o README com a frase 'PoC ativo no desktop' e fazer commit."
-    if "readme" in t:
-        return "Abra README.md, adicione 'PoC ativo no desktop (branch poc-desktop)' e faça commit curto."
+        return "Passo único de hoje: rodar este menu e ver o LLM respondendo ao seu pedido."
     if "api" in t:
-        return "Próximo: criar llm_client real com ChatGPT (colocar chave via .env)."
-    if "repo" in t or "github" in t:
-        return "Abra uma Issue 'PoC v0.3 – Mentor responde' e marque como done quando este script rodar."
-    return "Sugestão: escolha 1 micro-ação que caiba em 5 minutos e me diga qual será."
+        return "A API já está integrada neste arquivo. Se der erro, será mostrado no texto do LLM."
+    return "Sugestão: escreva o que você quer que o Nemosine faça agora em uma frase clara."
+
 
 print("Nemosine PoC (Desktop) ativo.")
 pedido = input("Diga ao Mentor o que você quer agora:\n> ").strip() or "quero um passo concreto pra hoje"
 
 mensagem = mentor_responde(pedido)
-eco_llm = enviar_para_llm(pedido)  # usa o cliente (real se .env ok; senão, mensagem OFF)
+eco_llm = enviar_para_llm(pedido)
 
 registro = {
     "persona": "Mentor",
@@ -30,12 +51,13 @@ registro = {
     "mensagem": mensagem,
     "rastro": {"fonte": "Mentor", "coerencia": 0.9, "referencias": []},
     "pedido": pedido,
-    "llm_echo": eco_llm
+    "llm_echo": eco_llm,
 }
 
 with LOG.open("a", encoding="utf-8") as f:
     f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
 print("Mentor:", mensagem)
-print(eco_llm)
+print("LLM :", eco_llm)
 print("✅ Registrado em data/outputs/logs.jsonl")
+

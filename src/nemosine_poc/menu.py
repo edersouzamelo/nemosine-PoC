@@ -1,10 +1,16 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 import json
 
 # 🔒 Forçar UTF-8 na saída padrão, independentemente do terminal
-sys.stdout.reconfigure(encoding='utf-8')  # ← OBRIGATÓRIO!
+sys.stdout.reconfigure(encoding='utf-8')
 
+# 📁 Garantir pasta de saída
+os.makedirs("data/outputs", exist_ok=True)
+
+# ✍️ Função para salvar logs
 def escrever_log(texto):
     try:
         with open("data/outputs/logs.jsonl", "a", encoding="utf-8") as f:
@@ -13,11 +19,12 @@ def escrever_log(texto):
     except Exception as e:
         print(f"Erro ao escrever o log: {e}")
 
+# 🤖 Resposta simulada do Mentor (substituir pela chamada real à OpenAI depois)
 def mentor_responde(pergunta):
-    # Simulação da resposta que vem do LLM
     resposta = "Mentor: Sugestão: escreva o que você quer que o Nemosine faça agora em uma frase clara."
     return resposta
 
+# 🚀 Execução principal
 if __name__ == "__main__":
     print("Nemosine PoC (Desktop) ativo.")
     while True:
@@ -30,3 +37,4 @@ if __name__ == "__main__":
             escrever_log(resposta)
         except Exception as e:
             print(f"LLM  : (LLM erro) {e}")
+

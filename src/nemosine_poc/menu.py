@@ -1,16 +1,22 @@
+# -*- coding: utf-8 -*-
 import os
-from openai import OpenAI
-from dotenv import load_dotenv
+import sys
 import json
 from datetime import datetime
+from openai import OpenAI
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Configura terminal para UTF-8
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Carrega a chave da API do .env
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Mensagem inicial do sistema
-print("Nemosine PoC (Desktop) ativo.")
-print("Diga ao Mentor o que você quer agora:")
+# Mensagem inicial
+print("Nemosine PoC (Desktop) — diga algo ao Mentor:")
 
 # Loop principal
 while True:
@@ -20,7 +26,6 @@ while True:
             print("Encerrando Nemosine.")
             break
 
-        # Envia para o modelo
         resposta = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -32,18 +37,18 @@ while True:
         output_text = resposta.choices[0].message.content.strip()
         print("\nMentor:", output_text)
 
-        # Salva o log da interação
+        # Salva no log
         log = {
             "timestamp": datetime.utcnow().isoformat(),
             "pergunta": user_input,
             "resposta": output_text
         }
 
-        os.makedirs("data/outputs", exist_ok=True)
-        with open("data/outputs/logs.jsonl", "a", encoding="utf-8") as f:
+        output_path = Path("data/outputs/logs.jsonl")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with output_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(log, ensure_ascii=False) + "\n")
         print("✅ Registrado em data/outputs/logs.jsonl")
 
     except Exception:
-        # Silencia erro de print com encoding (ex: '\u2014' em terminal que não aceita UTF-8)
         print("\nLLM  : (erro interno não exibido no console)")

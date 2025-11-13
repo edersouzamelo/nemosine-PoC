@@ -10,6 +10,11 @@ import urllib.error
 
 from dotenv import load_dotenv
 
+import sys
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+
 
 # -------------------------------------------------------------------
 # Config de saída e paths

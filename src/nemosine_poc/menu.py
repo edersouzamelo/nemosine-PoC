@@ -1,57 +1,72 @@
-import os
-import json
-import openai
-import datetime
+# -*- coding: utf-8 -*-
+
 import sys
 import io
+import json
+from pathlib import Path
+import openai
 
-# Corrige o encoding do terminal para UTF-8 no Windows
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
+# ============================================================
+# 1. FORÇA O TERMINAL/VS CODE/POWERSHELL A USAR UTF‑8 DE VERDADE
+# ============================================================
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-# Carrega a chave da API (ou substitua diretamente por sua chave)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# ============================================================
+# 2. COLOQUE SUA CHAVE AQUI — EXATAMENTE AQUI
+# ============================================================
+openai.api_key = "COLOQUE_SUA_API_KEY_AQUI"
 
-# Caminho do arquivo de log
-log_path = "data/outputs/logs.jsonl"
-os.makedirs(os.path.dirname(log_path), exist_ok=True)
+# ============================================================
+# 3. PASTA DE SAÍDA (logs)
+# ============================================================
+OUT = Path("data/outputs")
+OUT.mkdir(parents=True, exist_ok=True)
 
-# Função para gerar resposta da IA
-def gerar_resposta(mensagem_usuario):
+# ============================================================
+# 4. LOOP PRINCIPAL
+# ============================================================
+print("Nemosine PoC (Desktop) ativo.")
+print("Diga ao Mentor o que você quer agora:")
+
+while True:
+    pergunta = input("> ").strip()
+
+    if not pergunta:
+        continue
+
+    # ============================================================
+    # 5. CHAMADA REAL À OPENAI
+    # ============================================================
     try:
         resposta = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Você é o Mentor do sistema Nemosine. Responda com clareza e foco em ação."},
-                {"role": "user", "content": mensagem_usuario}
-            ],
-            temperature=0.7
+                {"role": "system", "content": "Você é o Mentor do Sistema Nemosine."},
+                {"role": "user", "content": pergunta}
+            ]
         )
-        return resposta.choices[0].message["content"].strip()
+
+        texto = resposta.choices[0].message["content"]
 
     except Exception as e:
-        return f"(LLM erro) {str(e)}"
+        print("\n[ERRO LLM] →", str(e))
+        texto = "Erro do modelo."
 
-# Função para registrar no log
-def registrar_log(mensagem_usuario, resposta_mentor):
-    log = {
-        "timestamp": datetime.datetime.now().isoformat(),
-        "usuario": mensagem_usuario,
-        "mentor": resposta_mentor
+    # ============================================================
+    # 6. MOSTRA NO TERMINAL (UTF‑8 GARANTIDO)
+    # ============================================================
+    print("\nMentor:", texto)
+
+    # ============================================================
+    # 7. SALVA EM JSON (UTF‑8 GARANTIDO)
+    # ============================================================
+    registro = {
+        "pergunta": pergunta,
+        "resposta": texto
     }
-    with open(log_path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(log, ensure_ascii=False) + "\n")
-    print("✅ Registrado em", log_path)
 
-# Loop principal
-def executar_menu():
-    print("Nemosine PoC (Desktop) ativo.")
-    while True:
-        mensagem_usuario = input("Diga ao Mentor o que você quer agora:\n> ")
-        if mensagem_usuario.lower() in ["sair", "exit", "quit"]:
-            break
-        resposta_mentor = gerar_resposta(mensagem_usuario)
-        print("\nMentor:", resposta_mentor)
-        registrar_log(mensagem_usuario, resposta_mentor)
+    with open(OUT / "logs.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
-if __name__ == "__main__":
-    executar_menu()
+    print("✔ Registrado em data/outputs/logs.jsonl\n")
+    print("Diga ao Mentor o que você quer agora:")

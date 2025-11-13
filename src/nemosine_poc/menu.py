@@ -1,4 +1,6 @@
 # Nemosine PoC – Mentor + LLM num arquivo só (versão simples)
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 from pathlib import Path
 import json

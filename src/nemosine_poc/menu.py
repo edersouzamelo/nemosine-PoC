@@ -14,7 +14,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 # ============================================================
 # 2. COLOQUE SUA CHAVE AQUI — EXATAMENTE AQUI
 # ============================================================
-openai.api_key = "COLOQUE_SUA_API_KEY_AQUI"
+openai.api_key = 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
 
 # ============================================================
 # 3. PASTA DE SAÍDA (logs)

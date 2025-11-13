@@ -1,76 +1,100 @@
 #!/usr/bin/env python3
-# Nemosine PoC – Mentor + LLM num arquivo só (versão simples)
+# Nemosine PoC – Mentor + LLM num arquivo só (versão HTTP cru, sem lib openai)
 
 import sys
 from pathlib import Path
 import json
 import os
+import urllib.request
+import urllib.error
 
 from dotenv import load_dotenv
-from openai import OpenAI
 
 
 # -------------------------------------------------------------------
-# Configuração de saída e paths
+# Config de saída e paths
 # -------------------------------------------------------------------
 
-# Tenta garantir que o console aceite UTF-8 (quando possível)
 try:
+    # Tenta forçar UTF-8; se não der, segue a vida
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
     pass
 
-# Pasta de logs (mesmo esquema de antes)
 OUT = Path("data/outputs")
 OUT.mkdir(parents=True, exist_ok=True)
 LOG = OUT / "logs.jsonl"
 
 
 # -------------------------------------------------------------------
-# Função que chama o LLM de forma simples
+# Chamada manual à API do ChatGPT (HTTP cru)
 # -------------------------------------------------------------------
 
 def enviar_para_llm(pedido: str) -> str:
     """
-    Chama ChatGPT usando chat.completions.
-    Se der qualquer erro, devolve texto explicando.
+    Chama a API de chat da OpenAI via HTTP.
+    Não usa a biblioteca openai (pra evitar o bug de ascii).
     """
     load_dotenv()
 
     api_key = os.getenv("OPENAI_API_KEY")
+    # pode ajustar esse nome se quiser outro modelo
     model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
     if not api_key:
         return "(LLM off) Falta OPENAI_API_KEY no .env na raiz do projeto."
 
-    client = OpenAI(api_key=api_key)
+    url = "https://api.openai.com/v1/chat/completions"
+
+    payload = {
+        "model": model,
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "Você é o Mentor do Sistema Nemosine Nous em modo PoC Desktop. "
+                    "Responda de forma clara, curta e em português do Brasil."
+                ),
+            },
+            {
+                "role": "user",
+                "content": pedido,
+            },
+        ],
+    }
+
+    data_bytes = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
+
+    req = urllib.request.Request(url, data=data_bytes, headers=headers, method="POST")
 
     try:
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Você é o Mentor do Sistema Nemosine Nous em modo PoC Desktop. "
-                        "Responda de forma clara, curta e em português do Brasil."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": pedido,
-                },
-            ],
-        )
+        with urllib.request.urlopen(req, timeout=40) as resp:
+            resp_bytes = resp.read()
+        resp_json = json.loads(resp_bytes.decode("utf-8", errors="replace"))
+        # navega na estrutura padrão do /chat/completions
+        choices = resp_json.get("choices", [])
+        if not choices:
+            return f"(LLM erro) resposta sem choices: {resp_json}"
 
-        # pega o texto da resposta
-        msg = resp.choices[0].message
-        texto = msg.content or ""
-        return texto
+        msg = choices[0].get("message", {})
+        content = msg.get("content", "")
+        if not content:
+            return f"(LLM erro) resposta sem content: {resp_json}"
 
-    except UnicodeEncodeError as e:
-        # Caso o bug de Unicode venha de dentro da lib
-        return f"(LLM erro de unicode dentro da lib OpenAI: {e})"
+        return content
+
+    except urllib.error.HTTPError as e:
+        # tenta ler corpo de erro
+        try:
+            body = e.read().decode("utf-8", errors="replace")
+        except Exception:
+            body = ""
+        return f"(LLM erro HTTP {e.code}) {e.reason} {body}"
     except Exception as e:
         return f"(LLM erro) {e.__class__.__name__}: {e}"
 
@@ -84,12 +108,12 @@ def mentor_responde_local(pedido: str) -> str:
     if "passo" in t or "hoje" in t or "agora" in t:
         return "Passo único de hoje: rodar este menu e ver o LLM respondendo ao seu pedido."
     if "api" in t:
-        return "A API já está integrada neste arquivo. Se der erro, ele aparece no texto da linha 'LLM :'."
+        return "A API está ligada neste arquivo via HTTP direto. Se algo falhar, o erro aparece na linha 'LLM :'."
     return "Sugestão: escreva o que você quer que o Nemosine faça agora em uma frase clara."
 
 
 # -------------------------------------------------------------------
-# Utilidades: log + impressão segura
+# Utilitários: log + impressão segura
 # -------------------------------------------------------------------
 
 def salvar_log(registro: dict) -> None:
@@ -97,7 +121,7 @@ def salvar_log(registro: dict) -> None:
         with LOG.open("a", encoding="utf-8") as f:
             f.write(json.dumps(registro, ensure_ascii=False) + "\n")
     except Exception:
-        # se o log falhar, não quebra o programa
+        # se der zica no log, não mata o programa
         pass
 
 
@@ -140,4 +164,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    main()
+
     main()

@@ -1,4 +1,7 @@
-# Nemosine PoC – Mentor + LLM num arquivo só (versão simples)
+# -*- coding: utf-8 -*-
+"""Nemosine PoC – Mentor + LLM num arquivo só (versão simples)."""
+
+from __future__ import annotations
 
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
@@ -26,14 +29,14 @@ def safe_print(prefixo: str, texto: str) -> None:
     except UnicodeEncodeError:
         texto_seguro = texto.encode("ascii", errors="replace").decode("ascii")
         print(prefixo, texto_seguro)
-        print("[Aviso] Seu console não suporta caracteres Unicode completos.")
-        print("[Aviso] A resposta COMPLETA está salva em data/outputs/logs.jsonl.")
+        print("[Aviso] Console do Windows não suporta todos os caracteres Unicode.")
+        print("[Aviso] Resposta COMPLETA está em data/outputs/logs.jsonl.")
 
 
-def enviar_para_llm(mensagem: str) -> str:
+def enviar_para_llm(pedido: str) -> str:
     """
     Chama ChatGPT de forma simples.
-    Se der erro em qualquer ponto, devolve texto explicando.
+    Qualquer erro vira texto e volta para o menu.
     """
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY")
@@ -45,16 +48,25 @@ def enviar_para_llm(mensagem: str) -> str:
     client = OpenAI(api_key=api_key)
 
     try:
-        resp = client.responses.create(model=model, input=mensagem)
-        # atributo helper do SDK; se não existir, devolve mensagem neutra
-        return getattr(resp, "output_text", "(LLM) resposta sem output_text")
+        resp = client.responses.create(
+            model=model,
+            input=pedido,
+        )
+        # SDK novo expõe isso em output_text; se não tiver, converte o objeto todo.
+        if hasattr(resp, "output_text"):
+            return resp.output_text
+        return str(resp)
     except Exception as e:
-        return f"(LLM erro) {e.__class__.__name__}: {e}"
+        try:
+            msg = str(e)
+        except Exception:
+            msg = repr(e)
+        return f"(LLM erro) {e.__class__.__name__}: {msg}"
 
 
 def mentor_responde(pedido: str) -> str:
     """
-    Regra simples do Mentor para responder ao pedido.
+    Regrinha simples do Mentor para responder ao pedido.
     """
     t = pedido.lower()
 
@@ -62,7 +74,7 @@ def mentor_responde(pedido: str) -> str:
         return "Passo único de hoje: rodar este menu e ver o LLM respondendo ao seu pedido."
 
     if "api" in t:
-        return "A API já está integrada neste arquivo. Se der erro, será mostrado no texto do LLM."
+        return "A API já está integrada neste arquivo. Se der erro, o texto do LLM vai explicar."
 
     return "Sugestão: escreva o que você quer que o Nemosine faça agora em uma frase clara."
 
@@ -70,8 +82,9 @@ def mentor_responde(pedido: str) -> str:
 def main() -> None:
     print("Nemosine PoC (Desktop) ativo.")
 
-    pedido = input("Diga ao Mentor o que você quer agora:\n> ").strip() or \
-             "quero um passo concreto pra hoje"
+    pedido = input("Diga ao Mentor o que você quer agora:\n> ").strip()
+    if not pedido:
+        pedido = "quero um passo concreto pra hoje"
 
     mensagem = mentor_responde(pedido)
     eco_llm = enviar_para_llm(pedido)
@@ -83,7 +96,7 @@ def main() -> None:
         "rastro": {
             "fonte": "Mentor",
             "coerencia": 0.9,
-            "referencias": []
+            "referencias": [],
         },
         "pedido": pedido,
         "llm_echo": eco_llm,
@@ -93,18 +106,10 @@ def main() -> None:
         f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
     print("Mentor:", mensagem)
-
-# Blindagem antecipada da resposta do LLM
-try:
-    texto_seguro = eco_llm.encode("utf-8").decode("utf-8")
-except:
-    texto_seguro = eco_llm.encode("ascii", errors="replace").decode("ascii")
-
-safe_print("LLM :", texto_seguro)
-
-print("✅ Registrado em data/outputs/logs.jsonl")
-
+    safe_print("LLM :", eco_llm)
+    print("✅ Registrado em data/outputs/logs.jsonl")
 
 
 if __name__ == "__main__":
     main()
+

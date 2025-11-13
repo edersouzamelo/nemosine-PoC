@@ -1,7 +1,7 @@
 # Nemosine PoC – Mentor respondendo (v0.4-min, com cliente LLM simulado/real)
 from pathlib import Path
 import json
-from nemosine_poc.llm_client import enviar_para_llm  # importa o cliente
+from llm_client import enviar_para_llm  # importa o cliente
 
 OUT = Path("data/outputs"); OUT.mkdir(parents=True, exist_ok=True)
 LOG = OUT / "logs.jsonl"

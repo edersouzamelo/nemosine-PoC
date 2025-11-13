@@ -1,61 +1,57 @@
-# -*- coding: utf-8 -*-
 import os
-import sys
 import json
-from datetime import datetime
-from openai import OpenAI
-from dotenv import load_dotenv
-from pathlib import Path
+import openai
+import datetime
+import sys
+import io
 
-# 🔧 Força UTF-8 mesmo no Windows + VSCode
-try:
-    sys.stdout.reconfigure(encoding='utf-8')
-    sys.stderr.reconfigure(encoding='utf-8')
-except AttributeError:
-    # Compatibilidade para Python < 3.7
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+# Corrige o encoding do terminal para UTF-8 no Windows
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 
-# 🔐 API Key
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Carrega a chave da API (ou substitua diretamente por sua chave)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-print("Nemosine PoC (Desktop) ativo.")
-print("Diga ao Mentor o que você quer agora:")
+# Caminho do arquivo de log
+log_path = "data/outputs/logs.jsonl"
+os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-while True:
+# Função para gerar resposta da IA
+def gerar_resposta(mensagem_usuario):
     try:
-        user_input = input("> ")
-        if user_input.lower().strip() in ["sair", "exit", "quit"]:
-            print("Encerrando Nemosine.")
-            break
-
-        resposta = client.chat.completions.create(
-            model="gpt-4o",
+        resposta = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Você é o Mentor do sistema Nemosine."},
-                {"role": "user", "content": user_input}
-            ]
+                {"role": "system", "content": "Você é o Mentor do sistema Nemosine. Responda com clareza e foco em ação."},
+                {"role": "user", "content": mensagem_usuario}
+            ],
+            temperature=0.7
         )
-
-        output_text = resposta.choices[0].message.content.strip()
-        print("\nMentor:", ''.join(c if ord(c) < 128 else '?' for c in output_text))
-
-
-
-        # 🔒 Log com UTF-8
-        log = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "pergunta": user_input,
-            "resposta": output_text
-        }
-
-        path = Path("data/outputs/logs.jsonl")
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(log, ensure_ascii=False) + "\n")
-        print("✅ Registrado em data/outputs/logs.jsonl\n")
+        return resposta.choices[0].message["content"].strip()
 
     except Exception as e:
-        print("LLM  : (erro interno) —", str(e))
+        return f"(LLM erro) {str(e)}"
+
+# Função para registrar no log
+def registrar_log(mensagem_usuario, resposta_mentor):
+    log = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "usuario": mensagem_usuario,
+        "mentor": resposta_mentor
+    }
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(log, ensure_ascii=False) + "\n")
+    print("✅ Registrado em", log_path)
+
+# Loop principal
+def executar_menu():
+    print("Nemosine PoC (Desktop) ativo.")
+    while True:
+        mensagem_usuario = input("Diga ao Mentor o que você quer agora:\n> ")
+        if mensagem_usuario.lower() in ["sair", "exit", "quit"]:
+            break
+        resposta_mentor = gerar_resposta(mensagem_usuario)
+        print("\nMentor:", resposta_mentor)
+        registrar_log(mensagem_usuario, resposta_mentor)
+
+if __name__ == "__main__":
+    executar_menu()

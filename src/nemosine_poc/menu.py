@@ -93,8 +93,17 @@ def main() -> None:
         f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
     print("Mentor:", mensagem)
-    safe_print("LLM :", eco_llm)
-    print("✅ Registrado em data/outputs/logs.jsonl")
+
+# Blindagem antecipada da resposta do LLM
+try:
+    texto_seguro = eco_llm.encode("utf-8").decode("utf-8")
+except:
+    texto_seguro = eco_llm.encode("ascii", errors="replace").decode("ascii")
+
+safe_print("LLM :", texto_seguro)
+
+print("✅ Registrado em data/outputs/logs.jsonl")
+
 
 
 if __name__ == "__main__":

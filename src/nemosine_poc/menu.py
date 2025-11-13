@@ -63,13 +63,13 @@ print("Mentor:", mensagem)
 
 try:
     # tenta imprimir normalmente
-    print("LLM :", eco_llm)
-except UnicodeEncodeError:
-    # se o terminal não aguentar algum caractere, substitui por �
-    safe = eco_llm.encode("utf-8", errors="replace").decode("utf-8")
+   try:
+    print("LLM :", eco_llm.encode("utf-8").decode("utf-8"))
+except:
+    safe = eco_llm.encode("ascii", "replace").decode("ascii")
     print("LLM :", safe)
-    print("[Aviso] Alguns caracteres da resposta do LLM não puderam ser exibidos no console,")
-    print("        mas a resposta COMPLETA foi salva em data/outputs/logs.jsonl.")
+    print("[Aviso] O console do Windows não suporta alguns caracteres Unicode.")
+    print("[Aviso] A resposta COMPLETA está salva em data/outputs/logs.jsonl.")
 
 print("✅ Registrado em data/outputs/logs.jsonl")
 

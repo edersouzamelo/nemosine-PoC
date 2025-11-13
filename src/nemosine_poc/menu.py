@@ -60,6 +60,17 @@ with LOG.open("a", encoding="utf-8") as f:
     f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
 print("Mentor:", mensagem)
-print("LLM :", eco_llm)
+
+try:
+    # tenta imprimir normalmente
+    print("LLM :", eco_llm)
+except UnicodeEncodeError:
+    # se o terminal não aguentar algum caractere, substitui por �
+    safe = eco_llm.encode("utf-8", errors="replace").decode("utf-8")
+    print("LLM :", safe)
+    print("[Aviso] Alguns caracteres da resposta do LLM não puderam ser exibidos no console,")
+    print("        mas a resposta COMPLETA foi salva em data/outputs/logs.jsonl.")
+
 print("✅ Registrado em data/outputs/logs.jsonl")
+
 

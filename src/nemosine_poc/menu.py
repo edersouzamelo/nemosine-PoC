@@ -1,7 +1,7 @@
-# Nemosine PoC – Mentor respondendo (v0.4-min, com cliente LLM simulado)
+# Nemosine PoC – Mentor respondendo (v0.4-min, com cliente LLM simulado/real)
 from pathlib import Path
 import json
-from nemosine_poc.llm_client import enviar_para_llm   # [NOVA 1]
+from nemosine_poc.llm_client import enviar_para_llm  # importa o cliente
 
 OUT = Path("data/outputs"); OUT.mkdir(parents=True, exist_ok=True)
 LOG = OUT / "logs.jsonl"
@@ -20,9 +20,9 @@ def mentor_responde(pedido: str) -> str:
 
 print("Nemosine PoC (Desktop) ativo.")
 pedido = input("Diga ao Mentor o que você quer agora:\n> ").strip() or "quero um passo concreto pra hoje"
-mensagem = mentor_responde(pedido)
 
-eco_llm = enviar_para_llm(pedido)         # [NOVA 2]
+mensagem = mentor_responde(pedido)
+eco_llm = enviar_para_llm(pedido)  # usa o cliente (real se .env ok; senão, mensagem OFF)
 
 registro = {
     "persona": "Mentor",
@@ -30,12 +30,12 @@ registro = {
     "mensagem": mensagem,
     "rastro": {"fonte": "Mentor", "coerencia": 0.9, "referencias": []},
     "pedido": pedido,
-    "llm_echo": eco_llm                    # [NOVA 3]
+    "llm_echo": eco_llm
 }
 
 with LOG.open("a", encoding="utf-8") as f:
     f.write(json.dumps(registro, ensure_ascii=False) + "\n")
 
 print("Mentor:", mensagem)
-print(eco_llm)  # mostra o retorno do cliente (simulado por enquanto)
+print(eco_llm)
 print("✅ Registrado em data/outputs/logs.jsonl")

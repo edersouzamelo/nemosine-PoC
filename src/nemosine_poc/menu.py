@@ -40,7 +40,8 @@ while True:
         )
 
         output_text = resposta.choices[0].message.content.strip()
-        print("\nMentor:", output_text)
+        print("\nMentor:", output_text.encode("utf-8", errors="replace").decode("utf-8"))
+
 
         # 🔒 Log com UTF-8
         log = {
